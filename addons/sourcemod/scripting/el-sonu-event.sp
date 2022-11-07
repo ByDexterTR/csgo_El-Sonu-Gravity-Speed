@@ -8,28 +8,28 @@ public Plugin myinfo =
 	name = "El Sonu Gravity-Speed", 
 	author = "ByDexter", 
 	description = "Tur bittiğinde yaşıyan oyunculara gravity ve speed verilir.", 
-	version = "1.2", 
+	version = "1.3", 
 	url = "https://steamcommunity.com/id/ByDexterTR/"
 };
 
 public void OnPluginStart()
 {
-	HookEvent("round_start", Control_RStart, EventHookMode_PostNoCopy);
-	HookEvent("round_end", Control_REnd, EventHookMode_PostNoCopy);
+	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
+	HookEvent("round_end", OnRoundEnd, EventHookMode_PostNoCopy);
 }
 
-public Action Control_RStart(Event event, const char[] name, bool dontBroadcast)
+public Action OnRoundStart(Event event, const char[] name, bool dB)
 {
-	SetConVarInt(FindConVar("sv_gravity"), 800, true, false);
-	for (int i = 1; i <= MaxClients; i++)
-	if (IsPlayerAlive(i) && !IsFakeClient(i))
-		SetEntPropFloat(i, Prop_Data, "m_flLaggedMovementValue", 1.0);
+	SetConVarInt(FindConVar("sv_gravity"), 800);
+	return Plugin_Continue;
 }
 
-public Action Control_REnd(Event event, const char[] name, bool dontBroadcast)
+public Action OnRoundEnd(Event event, const char[] name, bool dB)
 {
-	SetConVarInt(FindConVar("sv_gravity"), 100, true, false);
-	for (int i = 1; i <= MaxClients; i++)
-	if (IsPlayerAlive(i) && !IsFakeClient(i))
+	SetConVarInt(FindConVar("sv_gravity"), 100);
+	for (int i = 1; i <= MaxClients; i++)if (IsClientInGame(i) && IsPlayerAlive(i) && !IsFakeClient(i))
+	{
 		SetEntPropFloat(i, Prop_Data, "m_flLaggedMovementValue", 2.4);
+	}
+	return Plugin_Continue;
 } 
